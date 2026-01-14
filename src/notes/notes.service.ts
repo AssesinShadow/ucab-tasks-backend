@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-import { FilterNoteDto, SortBy } from './dto/filter-note.dto';
+import { FilterNoteDto } from './dto/filter-note.dto';
 import type { NotesRepository } from './interfaces/notes-repository.interface';
 
 @Injectable()
@@ -16,27 +16,12 @@ export class NotesService {
   }
 
   async findAll(filters?: FilterNoteDto) {
-    const notes = await this.notesRepository.findAll();
+    const notes = await this.notesRepository.findAll(filters);
     
-    // Aplicar filtros si existen
-    let filteredNotes = [...notes];
-    
-    if (filters?.sortBy) {
-      filteredNotes.sort((a, b) => {
-        const aValue = a[filters.sortBy as SortBy];
-        const bValue = b[filters.sortBy as SortBy];
-        
-        if (filters.sortOrder === 'desc') {
-          return bValue > aValue ? 1 : -1;
-        }
-        return aValue > bValue ? 1 : -1;
-      });
-    }
-    
-    // Excluir contenido en el listado general (según requisitos)
-    return filteredNotes.map((note) => {
-      const noteObj = note instanceof Object && note['toObject'] ? note['toObject']() : note;
-      const { content, ...rest } = noteObj; 
+    // Excluir contenido en el listado general (REQUISITO)
+    return notes.map((note) => {
+      const noteObj = note.toObject ? note.toObject() : note;
+      const { content, ...rest } = noteObj;
       return rest;
     });
   }
@@ -46,7 +31,7 @@ export class NotesService {
     if (!note) {
       throw new NotFoundException(`La nota con id #${id} no existe`);
     }
-    return note;
+    return note; // INCLUYE contenido (REQUISITO)
   }
 
   async update(id: string, updateNoteDto: UpdateNoteDto) {

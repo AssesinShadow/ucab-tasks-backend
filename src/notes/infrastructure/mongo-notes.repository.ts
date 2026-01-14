@@ -5,6 +5,7 @@ import { Note } from '../schemas/note.schema';
 import { NotesRepository } from '../interfaces/notes-repository.interface';
 import { CreateNoteDto } from '../dto/create-note.dto';
 import { UpdateNoteDto } from '../dto/update-note.dto';
+import { FilterNoteDto, SortBy, SortOrder } from '../dto/filter-note.dto';
 
 @Injectable()
 export class MongoNotesRepository implements NotesRepository {
@@ -17,8 +18,27 @@ export class MongoNotesRepository implements NotesRepository {
     return createdNote.save();
   }
 
-  async findAll(): Promise<Note[]> {
-    return this.noteModel.find().exec();
+  async findAll(filters?: FilterNoteDto): Promise<Note[]> {
+    // Construir query con filtros
+    const query = this.noteModel.find();
+    
+    // Aplicar búsqueda por texto
+    if (filters?.search) {
+      query.or([
+        { title: { $regex: filters.search, $options: 'i' } },
+        { content: { $regex: filters.search, $options: 'i' } }
+      ]);
+    }
+    
+    // Aplicar ordenamiento
+    if (filters?.sortBy) {
+      const sortOrder = filters.sortOrder === SortOrder.ASC ? 1 : -1;
+      const sortOptions = {};
+      sortOptions[filters.sortBy] = sortOrder;
+      query.sort(sortOptions);
+    }
+    
+    return query.exec();
   }
 
   async findById(id: string): Promise<Note | null> {
@@ -29,7 +49,7 @@ export class MongoNotesRepository implements NotesRepository {
     return this.noteModel.findByIdAndUpdate(
       id, 
       { ...updateNoteDto, updatedAt: new Date() },
-      { new: true } // Devuelve el documento actualizado
+      { new: true }
     ).exec();
   }
 

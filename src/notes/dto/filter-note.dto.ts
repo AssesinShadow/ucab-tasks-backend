@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export enum SortBy {
     TITLE = 'title',
@@ -30,4 +30,11 @@ export class FilterNoteDto {
     @IsOptional()
     @IsEnum(SortOrder)
     sortOrder?: SortOrder;
+
+    @ApiPropertyOptional({
+        description: 'Filtrar por texto en título o contenido'
+    })
+    @IsOptional()
+    @IsString()
+    search?: string;
 }
