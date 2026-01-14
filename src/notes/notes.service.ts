@@ -1,6 +1,7 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
+import { FilterNoteDto, SortBy } from './dto/filter-note.dto';
 import type { NotesRepository } from './interfaces/notes-repository.interface';
 
 @Injectable()
@@ -14,10 +15,27 @@ export class NotesService {
     return this.notesRepository.create(createNoteDto);
   }
 
-  async findAll() {
+  async findAll(filters?: FilterNoteDto) {
     const notes = await this.notesRepository.findAll();
-    return notes.map((note) => {
-      const noteObj = (note as any).toObject ? (note as any).toObject() : note;
+    
+    // Aplicar filtros si existen
+    let filteredNotes = [...notes];
+    
+    if (filters?.sortBy) {
+      filteredNotes.sort((a, b) => {
+        const aValue = a[filters.sortBy as SortBy];
+        const bValue = b[filters.sortBy as SortBy];
+        
+        if (filters.sortOrder === 'desc') {
+          return bValue > aValue ? 1 : -1;
+        }
+        return aValue > bValue ? 1 : -1;
+      });
+    }
+    
+    // Excluir contenido en el listado general (según requisitos)
+    return filteredNotes.map((note) => {
+      const noteObj = note instanceof Object && note['toObject'] ? note['toObject']() : note;
       const { content, ...rest } = noteObj; 
       return rest;
     });
@@ -46,4 +64,3 @@ export class NotesService {
     return this.notesRepository.deleteMany(ids);
   }
 }
-

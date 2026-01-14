@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseArrayPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
+import { FilterNoteDto } from './dto/filter-note.dto';
 
 @Controller('notes')
 export class NotesController {
@@ -13,8 +14,8 @@ export class NotesController {
   }
 
   @Get()
-  findAll() {
-    return this.notesService.findAll();
+  findAll(@Query() filters: FilterNoteDto) {
+    return this.notesService.findAll(filters);
   }
 
   @Get(':id')
