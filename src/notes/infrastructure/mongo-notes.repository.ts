@@ -3,54 +3,53 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Note } from '../schemas/note.schema';
 import { NotesRepository } from '../interfaces/notes-repository.interface';
-import { CreateNoteDto } from '../dto/create-note.dto';
-import { UpdateNoteDto } from '../dto/update-note.dto';
-import { FilterNoteDto, SortBy, SortOrder } from '../dto/filter-note.dto';
+import { SortField, SortOrder } from '../dto/query-notes.dto';
 
+/**
+ * Implementación del repositorio de notas usando MongoDB
+ * 
+ * Esta clase implementa la interfaz NotesRepository usando Mongoose
+ * para interactuar con MongoDB. Si en el futuro se necesita cambiar
+ * la fuente de datos, solo se crea una nueva implementación de la interfaz.
+ * 
+ * @class MongoNotesRepository
+ * @implements {NotesRepository}
+ */
 @Injectable()
 export class MongoNotesRepository implements NotesRepository {
-  constructor(
-    @InjectModel(Note.name) private readonly noteModel: Model<Note>,
-  ) {}
+  constructor(@InjectModel(Note.name) private readonly noteModel: Model<Note>) {}
 
-  async create(createNoteDto: CreateNoteDto): Promise<Note> {
-    const createdNote = new this.noteModel(createNoteDto);
-    return createdNote.save();
-  }
-
-  async findAll(filters?: FilterNoteDto): Promise<Note[]> {
-    // Construir query con filtros
+  /**
+   * Obtiene todas las notas con opciones de ordenamiento
+   * @param {SortField} sortBy - Campo por el cual ordenar
+   * @param {SortOrder} order - Orden (ascendente o descendente)
+   * @returns {Promise<Note[]>} Lista de notas ordenadas
+   */
+  async findAll(sortBy?: SortField, order?: SortOrder): Promise<Note[]> {
     const query = this.noteModel.find();
     
-    // Aplicar búsqueda por texto
-    if (filters?.search) {
-      query.or([
-        { title: { $regex: filters.search, $options: 'i' } },
-        { content: { $regex: filters.search, $options: 'i' } }
-      ]);
-    }
-    
-    // Aplicar ordenamiento
-    if (filters?.sortBy) {
-      const sortOrder = filters.sortOrder === SortOrder.ASC ? 1 : -1;
-      const sortOptions = {};
-      sortOptions[filters.sortBy] = sortOrder;
-      query.sort(sortOptions);
+    // Si se especifica un campo de ordenamiento, aplicarlo
+    if (sortBy) {
+      const sortOrder = order === SortOrder.DESC ? -1 : 1;
+      query.sort({ [sortBy]: sortOrder });
     }
     
     return query.exec();
   }
 
   async findById(id: string): Promise<Note | null> {
+    // Si no lo encuentra, devuelve null sin lanzar error (eso lo maneja el servicio)
     return this.noteModel.findById(id).exec();
   }
 
-  async update(id: string, updateNoteDto: UpdateNoteDto): Promise<Note | null> {
-    return this.noteModel.findByIdAndUpdate(
-      id, 
-      { ...updateNoteDto, updatedAt: new Date() },
-      { new: true }
-    ).exec();
+  async create(note: any): Promise<Note> {
+    const createdNote = new this.noteModel(note);
+    return createdNote.save();
+  }
+
+  async update(id: string, note: any): Promise<Note | null> {
+    // { new: true } es vital para que devuelva el objeto YA editado
+    return this.noteModel.findByIdAndUpdate(id, note, { new: true }).exec();
   }
 
   async deleteMany(ids: string[]): Promise<void> {
