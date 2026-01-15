@@ -11,7 +11,7 @@ Proyecto para la asignatura Tópicos Especiales de Programación. API RESTful pa
 
 1.  Clonar el repositorio:
     ```bash
-    git clone <LIhttps://github.com/AssesinShadow/ucab-tasks-backend.git>
+    git clone <https://github.com/AssesinShadow/ucab-tasks-backend.git>
     ```
 2.  Instalar dependencias:
     ```bash
