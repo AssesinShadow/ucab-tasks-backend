@@ -22,11 +22,21 @@ Proyecto para la asignatura Tópicos Especiales de Programación. API RESTful pa
     ```bash
     npm run start:dev
     ```
+4. Encender la Base de Datos
+   ```bash
+   mongod.exe
+   ```
+   
+5. Interfaz para la Base de Datos
+   ```bash
+   mongosh
+   ```
 
 ## 📚 Documentación
 * [cite_start]**Swagger**: Una vez iniciado el servidor, visita `http://localhost:3000/api` para ver la documentación interactiva de los endpoints.
 
-* [cite_start]**Swagger**: Al momento de querer correr las pruebas unitarias del programa, escribe en el terminal npm run test.
+* [cite_start]**Pruebas Unitarias**: Al momento de querer correr las pruebas unitarias del programa (hechas con Jest), escribe en el terminal npm run test.
+* No es necesario instalar Jest ya que viene con la instalacion de Node.js
 
 ## 👤 Autores
 * Alejandro Poveda Marcano
