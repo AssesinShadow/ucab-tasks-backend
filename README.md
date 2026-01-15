@@ -5,6 +5,7 @@ Proyecto para la asignatura Tópicos Especiales de Programación. API RESTful pa
 ## 📋 Requisitos Previos
 * [cite_start]**Node.js**: v18 o superior..
 * [cite_start]**Base de Datos**: MongoDB (Debe estar instalada y corriendo localmente en el puerto 27017).
+* En caso de no saber como instalar MongoDB: https://youtu.be/eKXIxSZrJfw?si=zQxPtGDaeJZUzBlp
 
 ## 🚀 Instalación y Ejecución
 [cite_start]Sigue estos pasos para ejecutar el prototipo localmente[cite: 42]:
@@ -24,6 +25,8 @@ Proyecto para la asignatura Tópicos Especiales de Programación. API RESTful pa
 
 ## 📚 Documentación
 * [cite_start]**Swagger**: Una vez iniciado el servidor, visita `http://localhost:3000/api` para ver la documentación interactiva de los endpoints.
+
+* [cite_start]**Swagger**: Al momento de querer correr las pruebas unitarias del programa, escribe en el terminal npm run test.
 
 ## 👤 Autores
 * Alejandro Poveda Marcano
