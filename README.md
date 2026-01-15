@@ -3,15 +3,15 @@
 Proyecto para la asignatura Tópicos Especiales de Programación. API RESTful para crear, editar, eliminar y consultar notas de texto.
 
 ## 📋 Requisitos Previos
-* [cite_start]**Node.js**: v18 o superior[cite: 41].
-* [cite_start]**Base de Datos**: MongoDB (Tus compañeros deben decirte si usan Docker o instalación local)[cite: 31, 41].
+* [cite_start]**Node.js**: v18 o superior..
+* [cite_start]**Base de Datos**: MongoDB (Debe estar instalada y corriendo localmente en el puerto 27017).
 
 ## 🚀 Instalación y Ejecución
 [cite_start]Sigue estos pasos para ejecutar el prototipo localmente[cite: 42]:
 
 1.  Clonar el repositorio:
     ```bash
-    git clone <LINK_DEL_REPO_GITHUB>
+    git clone <LIhttps://github.com/AssesinShadow/ucab-tasks-backend.git>
     ```
 2.  Instalar dependencias:
     ```bash
